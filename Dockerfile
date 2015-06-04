@@ -13,5 +13,6 @@ RUN yum -y update; yum clean all; \
     rm -f /lib/systemd/system/basic.target.wants/*;\
     rm -f /lib/systemd/system/anaconda.target.wants/*;
 
+ADD functions /etc/init.d/functions
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/usr/sbin/init"]
