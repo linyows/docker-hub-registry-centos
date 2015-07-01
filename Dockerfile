@@ -1,17 +1,7 @@
-FROM centos:7.1.1503
+FROM linyows/centos:6.4
 MAINTAINER "linyows" <linyows@gmail.com>
 
-ENV container docker
-RUN yum -y swap -- remove fakesystemd -- install systemd systemd-libs
-RUN yum -y update; yum clean all; \
-    (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
-    rm -f /lib/systemd/system/multi-user.target.wants/*;\
-    rm -f /etc/systemd/system/*.wants/*;\
-    rm -f /lib/systemd/system/local-fs.target.wants/*; \
-    rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
-    rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
-    rm -f /lib/systemd/system/basic.target.wants/*;\
-    rm -f /lib/systemd/system/anaconda.target.wants/*;
-
-VOLUME [ "/sys/fs/cgroup" ]
-CMD ["/usr/sbin/init"]
+RUN yum -q -y -x 'kernel*' -x 'centos*' --skip-broken update
+RUN yum -y install openssh-server sudo hostname unzip bzip2 tar wget cronie diffutils
+RUN rpm -Uvh https://opscode-omnibus-packages.s3.amazonaws.com/el/6/x86_64/chef-12.3.0-1.el6.x86_64.rpm
+RUN rpm -ivh http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm && yum -y install puppet-3.7.5
