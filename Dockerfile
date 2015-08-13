@@ -15,5 +15,13 @@ RUN wget -q https://raw.githubusercontent.com/linyows/centos-6.6_rpms/master/apr
   wget -q https://raw.githubusercontent.com/linyows/centos-6.6_rpms/master/httpd-2.4.16-1.x86_64.rpm && \
   wget -q https://raw.githubusercontent.com/linyows/centos-6.6_rpms/master/httpd-devel-2.4.16-1.x86_64.rpm && \
   wget -q https://raw.githubusercontent.com/linyows/centos-6.6_rpms/master/mod_ssl-2.4.16-1.x86_64.rpm && \
-  rpm -Uvh httpd-2.4.16-1.x86_64.rpm httpd-devel-2.4.16-1.x86_64.rpm mod_ssl-2.4.16-1.x86_64.rpm
+  rpm -Uvh httpd-2.4.16-1.x86_64.rpm httpd-devel-2.4.16-1.x86_64.rpm mod_ssl-2.4.16-1.x86_64.rpm && \
   rm -rf httpd-2.4.16-1.x86_64.rpm httpd-devel-2.4.16-1.x86_64.rpm mod_ssl-2.4.16-1.x86_64.rpm
+ADD httpd.conf /etc/httpd/conf/httpd.conf
+
+RUN yum install -q -y epel-release
+RUN yum install -q -y supervisor
+ADD supervisord.conf /etc/supervisord.conf
+
+EXPOSE 80 443
+CMD ["/usr/bin/supervisord"]
