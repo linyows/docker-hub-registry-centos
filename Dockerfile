@@ -1,27 +1,20 @@
-FROM centos:6.6
+FROM linyows/centos:6.6_apache-2.4_phpenv
 MAINTAINER "linyows" <linyows@gmail.com>
 
 RUN yum -q -y -x 'kernel*' -x 'centos*' --skip-broken update
 
-RUN yum install -q -y wget perl mailcap libtool db4-devel expat-devel
-RUN wget -q https://raw.githubusercontent.com/linyows/centos-6.6_rpms/master/apr-1.5.2-1.x86_64.rpm && \
-  wget -q https://raw.githubusercontent.com/linyows/centos-6.6_rpms/master/apr-devel-1.5.2-1.x86_64.rpm && \
-  rpm -Uvh apr-1.5.2-1.x86_64.rpm apr-devel-1.5.2-1.x86_64.rpm && \
-  rm -rf apr-1.5.2-1.x86_64.rpm apr-devel-1.5.2-1.x86_64.rpm && \
-  wget -q https://raw.githubusercontent.com/linyows/centos-6.6_rpms/master/apr-util-1.5.4-1.x86_64.rpm && \
-  wget -q https://raw.githubusercontent.com/linyows/centos-6.6_rpms/master/apr-util-devel-1.5.4-1.x86_64.rpm && \
-  rpm -Uvh apr-util-1.5.4-1.x86_64.rpm apr-util-devel-1.5.4-1.x86_64.rpm && \
-  rm -rf apr-util-1.5.4-1.x86_64.rpm apr-util-devel-1.5.4-1.x86_64.rpm && \
-  wget -q https://raw.githubusercontent.com/linyows/centos-6.6_rpms/master/httpd-2.4.16-1.x86_64.rpm && \
-  wget -q https://raw.githubusercontent.com/linyows/centos-6.6_rpms/master/httpd-devel-2.4.16-1.x86_64.rpm && \
-  wget -q https://raw.githubusercontent.com/linyows/centos-6.6_rpms/master/mod_ssl-2.4.16-1.x86_64.rpm && \
-  rpm -Uvh httpd-2.4.16-1.x86_64.rpm httpd-devel-2.4.16-1.x86_64.rpm mod_ssl-2.4.16-1.x86_64.rpm && \
-  rm -rf httpd-2.4.16-1.x86_64.rpm httpd-devel-2.4.16-1.x86_64.rpm mod_ssl-2.4.16-1.x86_64.rpm
-ADD httpd.conf /etc/httpd/conf/httpd.conf
+RUN yum install -q -y mysql-client gzip tar epel-release bzip2 libmcrypt-devel \
+  bzip2-devel libc-client-devel curl-devel freetype-devel gmp-devel \
+  libjpeg-devel libpng-devel libXpm-devel krb5-devel openssl-devel t1lib-devel libmcrypt-devel \
+  mhash-devel readline-devel libxml2-devel libtidy-devel libxslt-devel pcre-devel sqlite-devel \
+  mysql-libs postgresql-libs re2c git
+RUN wget -q http://elders.princeton.edu/data/puias/unsupported/6/x86_64/libmcrypt-2.5.8-9.puias6.x86_64.rpm && \
+  rpm -ivh libmcrypt-2.5.8-9.puias6.x86_64.rpm && \
+  rm -rf libmcrypt-2.5.8-9.puias6.x86_64.rpm && \
+  wget -q http://elders.princeton.edu/data/puias/unsupported/6/x86_64/libmcrypt-devel-2.5.8-9.puias6.x86_64.rpm && \
+  rpm -ivh libmcrypt-devel-2.5.8-9.puias6.x86_64.rpm && \
+  rm -rf libmcrypt-devel-2.5.8-9.puias6.x86_64.rpm
 
-RUN yum install -q -y epel-release
-RUN yum install -q -y supervisor
-ADD supervisord.conf /etc/supervisord.conf
-
-EXPOSE 80 443
-CMD ["/usr/bin/supervisord"]
+ADD default_configure_options /opt/phpenv/plugins/php-build/share/php-build/default_configure_options
+RUN /bin/bash -l -c "phpenv install 5.5.25"
+RUN /bin/bash -l -c "phpenv global 5.5.25"
