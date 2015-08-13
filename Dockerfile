@@ -8,13 +8,8 @@ RUN yum install -q -y mysql-client gzip tar epel-release bzip2 libmcrypt-devel \
   libjpeg-devel libpng-devel libXpm-devel krb5-devel openssl-devel t1lib-devel libmcrypt-devel \
   mhash-devel readline-devel libxml2-devel libtidy-devel libxslt-devel pcre-devel sqlite-devel \
   mysql-libs postgresql-libs re2c git
-RUN wget -q http://elders.princeton.edu/data/puias/unsupported/6/x86_64/libmcrypt-2.5.8-9.puias6.x86_64.rpm && \
-  rpm -ivh libmcrypt-2.5.8-9.puias6.x86_64.rpm && \
-  rm -rf libmcrypt-2.5.8-9.puias6.x86_64.rpm && \
-  wget -q http://elders.princeton.edu/data/puias/unsupported/6/x86_64/libmcrypt-devel-2.5.8-9.puias6.x86_64.rpm && \
-  rpm -ivh libmcrypt-devel-2.5.8-9.puias6.x86_64.rpm && \
-  rm -rf libmcrypt-devel-2.5.8-9.puias6.x86_64.rpm
 
 ADD default_configure_options /opt/phpenv/plugins/php-build/share/php-build/default_configure_options
 RUN /bin/bash -l -c "phpenv install 5.5.25"
 RUN /bin/bash -l -c "phpenv global 5.5.25"
+RUN ln -s /opt/phpenv/versions/5.5.25/etc /etc/php5
